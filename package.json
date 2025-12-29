@@ -1,0 +1,217 @@
+{
+    "name": "veil",
+    "displayName": "VEIL - Visual Environment Information Lock",
+    "description": "Detect and visually mask sensitive information like API keys, tokens, and secrets without modifying file contents",
+    "version": "1.0.0",
+    "publisher": "shyam-yemuka",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Other",
+        "Visualization"
+    ],
+    "keywords": [
+        "security",
+        "secrets",
+        "api-keys",
+        "mask",
+        "hide",
+        "screen-share",
+        "privacy"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "veil.toggle",
+                "title": "VEIL: Toggle Extension",
+                "icon": "$(eye)"
+            },
+            {
+                "command": "veil.screenShareMode",
+                "title": "VEIL: Toggle Screen Share Mode",
+                "icon": "$(broadcast)"
+            },
+            {
+                "command": "veil.revealAll",
+                "title": "VEIL: Reveal All Secrets",
+                "icon": "$(eye)"
+            },
+            {
+                "command": "veil.maskAll",
+                "title": "VEIL: Mask All Secrets",
+                "icon": "$(eye-closed)"
+            },
+            {
+                "command": "veil.toggleFile",
+                "title": "VEIL: Toggle Current File Masking",
+                "icon": "$(file)"
+            },
+            {
+                "command": "veil.addPattern",
+                "title": "VEIL: Add Custom Pattern"
+            },
+            {
+                "command": "veil.openSettings",
+                "title": "VEIL: Open Settings"
+            },
+            {
+                "command": "veil.toggleAtCursor",
+                "title": "VEIL: Toggle Secret at Cursor",
+                "icon": "$(eye)"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "veil.toggle",
+                "key": "ctrl+shift+v",
+                "mac": "cmd+shift+v"
+            },
+            {
+                "command": "veil.screenShareMode",
+                "key": "ctrl+shift+s",
+                "mac": "cmd+shift+s"
+            },
+            {
+                "command": "veil.revealAll",
+                "key": "ctrl+shift+r",
+                "mac": "cmd+shift+r"
+            },
+            {
+                "command": "veil.maskAll",
+                "key": "ctrl+shift+m",
+                "mac": "cmd+shift+m"
+            },
+            {
+                "command": "veil.toggleFile",
+                "key": "ctrl+shift+f",
+                "mac": "cmd+shift+f",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "veil.toggleAtCursor",
+                "key": "ctrl+.",
+                "mac": "cmd+.",
+                "when": "editorTextFocus"
+            }
+        ],
+        "configuration": {
+            "title": "VEIL",
+            "properties": {
+                "veil.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable or disable VEIL extension"
+                },
+                "veil.screenShareMode": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable screen share mode (masks all secrets)"
+                },
+                "veil.maskCharacter": {
+                    "type": "string",
+                    "default": "•",
+                    "description": "Character used for masking sensitive values"
+                },
+                "veil.hoverToReveal": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show original value on hover"
+                },
+                "veil.revealDuration": {
+                    "type": "number",
+                    "default": 5000,
+                    "description": "Duration in milliseconds for temporary reveal"
+                },
+                "veil.maskUrls": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Mask URL domains in screen share mode"
+                },
+                "veil.customPatterns": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Custom regex patterns to detect",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Pattern name"
+                            },
+                            "pattern": {
+                                "type": "string",
+                                "description": "Regex pattern"
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Pattern description"
+                            }
+                        }
+                    }
+                },
+                "veil.hiddenVariables": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Variable names to always mask",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "veil.hiddenStrings": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Literal strings to always mask",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "veil.toggle",
+                    "group": "navigation",
+                    "when": "editorTextFocus"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "npm run check-types && npm run lint && node esbuild.js",
+        "watch": "npm-run-all -p watch:*",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "npm run check-types && npm run lint && node esbuild.js --production",
+        "check-types": "tsc --noEmit",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "compile-tests": "tsc -p . --outDir out",
+        "lint": "eslint src",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "22.x",
+        "@types/vscode": "^1.85.0",
+        "@vscode/test-electron": "^2.5.2",
+        "esbuild": "^0.24.0",
+        "eslint": "^9.16.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.2.0",
+        "npm-run-all": "^4.1.5",
+        "typescript": "^5.7.2",
+        "typescript-eslint": "^8.18.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/veil-extension/veil"
+    },
+    "license": "MIT"
+}

@@ -1,0 +1,6 @@
+{
+    "env": {
+        "MOCHA_COLORS": "true"
+    },
+    "extensions.ignoreRecommendations": true
+}
