@@ -2,7 +2,7 @@
 
 🔒 **Automatically detect and mask sensitive information in your code — without modifying files.**
 
-![VEIL Extension](images/banner.png)
+![VEIL Extension](images/icon.png)
 
 ## Features
 
