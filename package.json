@@ -4,6 +4,7 @@
     "description": "Detect and visually mask sensitive information like API keys, tokens, and secrets without modifying file contents",
     "version": "1.0.0",
     "publisher": "shyam-yemuka",
+    "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.85.0"
     },
