@@ -2,7 +2,7 @@
     "name": "veil",
     "displayName": "VEIL - Visual Environment Information Lock",
     "description": "Detect and visually mask sensitive information like API keys, tokens, and secrets without modifying file contents",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "publisher": "ShyamYemuka",
     "icon": "images/icon.png",
     "engines": {

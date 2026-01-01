@@ -2,6 +2,14 @@
 
 All notable changes to the VEIL extension will be documented in this file.
 
+## [1.0.3] - 2026-01-01
+
+### Fixed
+- Updated repository URL to correct GitHub link
+- Added homepage and bugs URL for marketplace integration
+
+---
+
 ## [1.0.2] - 2026-01-01
 
 ### Fixed
