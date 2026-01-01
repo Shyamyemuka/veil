@@ -47,16 +47,12 @@ export class DecorationProvider {
 
     /**
      * Create decoration type for masked content
-     * Uses letter-spacing to collapse original text and transparent color to hide it
+     * Uses opacity to hide original text while showing the mask overlay
      */
     private createMaskedDecorationType(): vscode.TextEditorDecorationType {
         return vscode.window.createTextEditorDecorationType({
-            backgroundColor: 'rgba(255, 107, 107, 0.15)',
-            border: '1px solid rgba(255, 107, 107, 0.3)',
-            borderRadius: '3px',
-            // Hide the original text - make it transparent AND collapse with letter-spacing
-            color: 'transparent',
-            letterSpacing: '-100em',
+            // Hide the original text - make it transparent with opacity
+            opacity: '0',
             gutterIconPath: vscode.Uri.parse(this.gutterIconMasked),
             gutterIconSize: '80%'
         });
@@ -83,9 +79,8 @@ export class DecorationProvider {
             backgroundColor: 'rgba(255, 71, 87, 0.25)',
             border: '2px solid rgba(255, 71, 87, 0.5)',
             borderRadius: '3px',
-            // Hide the original text - make it transparent AND collapse with letter-spacing
-            color: 'transparent',
-            letterSpacing: '-100em'
+            // Hide the original text - make it transparent with opacity
+            opacity: '0'
         });
     }
 
@@ -93,7 +88,7 @@ export class DecorationProvider {
      * Generate mask string for a value
      */
     public generateMaskString(length: number): string {
-        return this.maskChar.repeat(Math.min(length, 20));
+        return this.maskChar.repeat(length);
     }
 
     /**

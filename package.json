@@ -2,7 +2,7 @@
     "name": "veil",
     "displayName": "VEIL - Visual Environment Information Lock",
     "description": "Detect and visually mask sensitive information like API keys, tokens, and secrets without modifying file contents",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "publisher": "ShyamYemuka",
     "icon": "images/icon.png",
     "engines": {
@@ -212,7 +212,11 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/veil-extension/veil"
+        "url": "https://github.com/Shyamyemuka/veil"
+    },
+    "homepage": "https://github.com/Shyamyemuka/veil#readme",
+    "bugs": {
+        "url": "https://github.com/Shyamyemuka/veil/issues"
     },
     "license": "MIT"
 }

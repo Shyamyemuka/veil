@@ -242,12 +242,16 @@ export class ContextAnalyzer {
     private findGenericMatches(document: vscode.TextDocument, text: string, matches: SensitiveMatch[]): void {
         // Pattern for variable assignments with string values
         const patterns = [
-            // const API_KEY = "value" or let secret = 'value'
-            /(?:const|let|var)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*["']([^"']+)["']/g,
-            // this.apiKey = "value" or obj.secret = 'value'
-            /\.([A-Za-z_][A-Za-z0-9_]*)\s*=\s*["']([^"']+)["']/g,
-            // { apiKey: "value" } or { secret: 'value' }
-            /([A-Za-z_][A-Za-z0-9_]*)\s*:\s*["']([^"']+)["']/g
+            // const API_KEY = "value" or let secret = 'value' or const token = `value`
+            /(?:const|let|var)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*["'`]([^"'`]+)["'`]/g,
+            // this.apiKey = "value" or obj.secret = 'value' or obj.token = `value`
+            /\.([A-Za-z_][A-Za-z0-9_]*)\s*=\s*["'`]([^"'`]+)["'`]/g,
+            // { apiKey: "value" } or { secret: 'value' } or { token: `value` }
+            /([A-Za-z_][A-Za-z0-9_]*)\s*:\s*["'`]([^"'`]+)["'`]/g,
+            // export const API_KEY = "value" - with export keyword
+            /export\s+(?:const|let|var)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*["'`]([^"'`]+)["'`]/g,
+            // process.env.API_KEY handling - look for sensitive env access patterns
+            /process\.env\.([A-Za-z_][A-Za-z0-9_]*)/g
         ];
 
         for (const pattern of patterns) {
@@ -258,8 +262,14 @@ export class ContextAnalyzer {
                 const keyName = match[1];
                 const value = match[2];
 
-                if (this.isSensitiveKeyName(keyName) && value.length >= MIN_SECRET_LENGTH) {
-                    // Find value position
+                // Special case for process.env patterns - just mark the variable access
+                if (!value && keyName) {
+                    // This is a process.env access, skip for now as the actual value is external
+                    continue;
+                }
+
+                if (this.isSensitiveKeyName(keyName) && value && value.length >= MIN_SECRET_LENGTH) {
+                    // Find value position - locate the exact position of the value in the match
                     const fullMatch = match[0];
                     const valueInMatch = fullMatch.lastIndexOf(value);
                     const valueStart = match.index + valueInMatch;
@@ -267,9 +277,10 @@ export class ContextAnalyzer {
                     const startPos = document.positionAt(valueStart);
                     const endPos = document.positionAt(valueStart + value.length);
 
-                    // Check if this range already exists
+                    // Check if this range already exists or overlaps
                     const exists = matches.some(m =>
-                        m.range.start.isEqual(startPos) && m.range.end.isEqual(endPos)
+                        m.range.start.isEqual(startPos) && m.range.end.isEqual(endPos) ||
+                        (m.range.start.isBefore(endPos) && startPos.isBefore(m.range.end))
                     );
 
                     if (!exists) {
